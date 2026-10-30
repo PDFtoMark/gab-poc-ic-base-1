@@ -1,0 +1,21 @@
+name: Owner Guard Semantics Test
+on:
+  issue_comment:
+    types: [created]
+
+permissions: read-all
+
+jobs:
+  control-unguarded:
+    if: ${{ startsWith(github.event.comment.body, '/probe') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo "CONTROL_JOB_RAN"
+
+  guarded-by-owner:
+    if: ${{ startsWith(github.event.comment.body, '/probe') && github.repository_owner == 'open-telemetry' }}
+    runs-on: ubuntu-24.04
+    permissions:
+      issues: write
+    steps:
+      - run: echo "GUARDED_JOB_RAN"
